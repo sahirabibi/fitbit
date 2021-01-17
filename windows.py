@@ -1,5 +1,6 @@
 from tkinter import *
 
+# ------------ COLOR THEMES ------------ #
 BLACK = "#222831"
 YELLOW = "#FFD369"
 GREY = "#393E46"
@@ -8,17 +9,18 @@ FONT = 'Courier'
 PADX = (10, 10)
 PADY = (20, 20)
 
-
+# ----------- Main Windows/Functionality ----------- # 
 class MainWindow:
 
     def __init__(self, window):
-
+        # main window set up. 
         self.window = window
         window.title('FitBit')
         window.config(padx=50, pady=20, bg=BLACK)
         # insert title image via canvas
         self.canvas = Canvas(width=270, height=100,
                              bg=BLACK, highlightthickness=0)
+        # background photo for title 
         self.photo = PhotoImage(file="./main_title.png")
         self.image = self.photo  # prevent garbage collection of image
         self.canvas.create_image(135, 50, image=self.image)
@@ -38,7 +40,7 @@ class MainWindow:
             FONT, 20, "normal"), fg=YELLOW, bg=BLACK)
         self.time_label.grid(column=0, row=2, padx=PADX, pady=PADY)
 
-        # time listbox
+        # time listbox, user can select # seconds to workout
         self.time_listbox = Listbox(
             height=4, fg=YELLOW, bg=GREY, selectbackground=BLACK)
         self.seconds = ["10", "20", "30", "60"]
@@ -55,7 +57,7 @@ class MainWindow:
             text='Clear All', fg=GREY, width=20, bg=GREY)
         self.workout_clear.grid(column=2, row=3, padx=PADX, pady=PADY)
 
-        # routine
+        # routine display 
         self.routine = Label(text="ROUTINE", font=(
             FONT, 30, "normal"), fg=YELLOW, bg=BLACK)
         self.routine.grid(column=1, row=4, padx=PADX, pady=PADY)
@@ -63,9 +65,11 @@ class MainWindow:
             text='Start', fg=GREY, width=20, bg=GREY, command=self.open_timer)
         self.start_routine.grid(column=1, row=3, padx=PADX, pady=PADY)
         self.start_row = 4
+        # save routine sets into list in order to call on later for timer
         self.routine_list = []
 
     def create_routine(self):
+        #Generates routine in format of rows at bottom of window via "add" button 
         self.start_row += 1
         self.work_text = self.workout_entry.get()
         self.new_routine = Label(text=self.work_text.upper(), font=(
@@ -80,6 +84,7 @@ class MainWindow:
         self.workout_entry.delete(0, END)
 
     def open_timer(self):
+        # launches timer window when "start" button hit
         self.newWindow = Toplevel(self.window)
         self.app = Timer(self.newWindow, self.routine_list)
 
@@ -88,6 +93,7 @@ class MainWindow:
 class Timer(MainWindow):
 
     def __init__(self, root, routine_list):
+        # display of timer/stop watch window 
         self.root = root
         self.routine_list = routine_list
         root.title('TIMER')
@@ -113,22 +119,25 @@ class Timer(MainWindow):
     
 
     def start_timer(self):
+        # "start" button begins timer 
         for routine in res:
+            # extract values from tuple
             workout = routine[0]
-            print(workout)
             count = routine[1]
-            print(count)
             self.title.config(text=workout)
+            # send time to count_down for interactive timer
             self.count_down(count)
 
                         
     def count_down(self, count):
+        # refreshes window every 1 second, decreases count by 1.  
         if count > 0:
             self.root.after(1000, self.count_down, count - 1)
             self.timer.config(text=count)
             
 
     def end_timer(self):
+        # reset timer
         self.timer.config(text='00')
         self.title.config(text='TIMER')
             

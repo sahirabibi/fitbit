@@ -53,20 +53,18 @@ class MainWindow:
         self.workout_add = Button(
             text='Add', fg=GREY, width=20, bg=GREY, command=self.create_routine)
         self.workout_add.grid(column=0, row=3, padx=PADX, pady=PADY)
-        self.workout_clear = Button(
-            text='Clear All', fg=GREY, width=20, bg=GREY)
-        self.workout_clear.grid(column=2, row=3, padx=PADX, pady=PADY)
+        self.workout_start = Button(
+            text='Start', fg=GREY, width=20, bg=GREY, command=self.open_timer)
+        self.workout_start.grid(column=2, row=3, padx=PADX, pady=PADY)
 
         # routine display 
         self.routine = Label(text="ROUTINE", font=(
             FONT, 30, "normal"), fg=YELLOW, bg=BLACK)
         self.routine.grid(column=1, row=4, padx=PADX, pady=PADY)
-        self.start_routine = Button(
-            text='Start', fg=GREY, width=20, bg=GREY, command=self.open_timer)
-        self.start_routine.grid(column=1, row=3, padx=PADX, pady=PADY)
         self.start_row = 4
         # save routine sets into list in order to call on later for timer
         self.routine_list = []
+        self.window.mainloop()
 
     def create_routine(self):
         #Generates routine in format of rows at bottom of window via "add" button 
@@ -116,24 +114,23 @@ class Timer(MainWindow):
         self.end = Button(root, text="END",fg=GREY,
                             width=10, height=5, bg=BLACK, command=self.end_timer)
         self.end.grid(column=3, row=2, pady=(10, 10))
+        
     
 
     def start_timer(self):
         # "start" button begins timer 
-        for routine in res:
+        for routine in self.routine_list:
             # extract values from tuple
             workout = routine[0]
             count = routine[1]
             self.title.config(text=workout)
-            # send time to count_down for interactive timer
-            self.count_down(count)
-
-                        
+            self.root.after(1000, self.count_down, count - 1)
+                   
     def count_down(self, count):
         # refreshes window every 1 second, decreases count by 1.  
         if count > 0:
-            self.root.after(1000, self.count_down, count - 1)
             self.timer.config(text=count)
+            self.root.after(1000, self.count_down, count - 1)
             
 
     def end_timer(self):

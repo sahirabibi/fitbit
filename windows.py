@@ -133,7 +133,7 @@ class Timer(MainWindow):
                    
     def count_down(self, count):
         # refreshes window every 1 second, decreases count by 1.  
-        if count > 0:
+        if count >= 0:
             self.timer.config(text=count)
             self.root.after(1000, self.count_down, count - 1)
             

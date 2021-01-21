@@ -94,6 +94,7 @@ class Timer(MainWindow):
         # display of timer/stop watch window 
         self.root = root
         self.routine_list = routine_list
+        self.workout_num = 0
         root.title('TIMER')
         root.config(bg=YELLOW, height=500, width=500, padx=20, pady=20)
         self.canvas = Canvas(self.root, width=400, height=400,
@@ -114,17 +115,21 @@ class Timer(MainWindow):
         self.end = Button(root, text="END",fg=GREY,
                             width=10, height=5, bg=BLACK, command=self.end_timer)
         self.end.grid(column=3, row=2, pady=(10, 10))
-        
-    
+          
 
     def start_timer(self):
         # "start" button begins timer 
-        for routine in self.routine_list:
+        if self.workout_num < len(self.routine_list):
+            current = self.routine_list[self.workout_num]
             # extract values from tuple
-            workout = routine[0]
-            count = routine[1]
+            workout = current[0]
+            count = current[1]
             self.title.config(text=workout)
-            self.root.after(1000, self.count_down, count - 1)
+            self.count_down(count)
+        else: 
+            self.timer.config(text="00")
+            self.title.config(text="WORKOUT COMPLETE")
+
                    
     def count_down(self, count):
         # refreshes window every 1 second, decreases count by 1.  
@@ -132,11 +137,9 @@ class Timer(MainWindow):
             self.timer.config(text=count)
             self.root.after(1000, self.count_down, count - 1)
             
-
-    def end_timer(self):
-        # reset timer
-        self.timer.config(text='00')
-        self.title.config(text='TIMER')
+        else:
+            self.root.after(2000, self.start_timer)
+            self.workout_num += 1
             
         
 
